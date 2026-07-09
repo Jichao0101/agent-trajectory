@@ -22,6 +22,17 @@ python3 -m collector.service --root .
 python3 -m collector.report --root . --write
 ```
 
+For low-overhead continuous collection, keep hooks as enqueue-only and run the
+collector outside the hook path:
+
+```bash
+python3 -m collector.scheduler --root /home/jichao/agent-trajectory --limit 100 --write-report
+python3 -m collector.scheduler --root /home/jichao/agent-trajectory --loop --interval 30 --limit 100 --write-report
+```
+
+The scheduler uses a collector lock, so overlapping timer invocations do not
+process the queue concurrently.
+
 Primary outputs:
 
 - `storage/queue/hook_events.jsonl`

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Trajectory Raw Event v1",
+  "type": "object",
+  "required": [
+    "event_id",
+    "trajectory_id",
+    "trajectory_schema_version",
+    "collector_version",
+    "collector_instance_id",
+    "source",
+    "ordering",
+    "actor",
+    "event_type",
+    "artifact_refs",
+    "snapshot_refs"
+  ],
+  "properties": {
+    "event_id": {"type": "string"},
+    "parent_event_id": {"type": ["string", "null"]},
+    "trajectory_id": {"type": "string"},
+    "trajectory_schema_version": {"const": "raw-trajectory-v1"},
+    "collector_version": {"type": "string"},
+    "collector_instance_id": {"type": "string"},
+    "source": {
+      "type": "object",
+      "required": ["agent_surface", "hook_profile", "workspace"],
+      "properties": {
+        "agent_surface": {"type": "string"},
+        "hook_profile": {"type": "string"},
+        "workspace": {"type": "string"},
+        "session_id": {"type": ["string", "null"]}
+      }
+    },
+    "ordering": {
+      "type": "object",
+      "required": ["ordering_strategy", "monotonic_sequence", "ingest_clock", "hook_phase", "correlation_status"],
+      "properties": {
+        "ordering_strategy": {"type": "string"},
+        "monotonic_sequence": {"type": "integer", "minimum": 1},
+        "wall_clock": {"type": ["string", "null"]},
+        "ingest_clock": {"type": "string"},
+        "parent_event_index": {"type": ["integer", "null"]},
+        "hook_phase": {"enum": ["pre", "post", "single"]},
+        "correlation_key": {"type": ["string", "null"]},
+        "correlation_status": {"enum": ["present", "missing"]}
+      }
+    },
+    "actor": {"type": "string"},
+    "event_type": {"enum": ["observe", "act", "verify", "fail", "handoff"]},
+    "tool_name": {"type": ["string", "null"]},
+    "observation": {"type": "object"},
+    "input_ref": {"type": ["object", "null"]},
+    "output_ref": {"type": ["object", "null"]},
+    "artifact_refs": {"type": "array"},
+    "snapshot_refs": {"type": "array"},
+    "ordering_barrier": {"type": "boolean"},
+    "raw_error": {"type": ["string", "null"]}
+  }
+}

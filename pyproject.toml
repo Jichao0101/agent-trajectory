@@ -1,0 +1,9 @@
+[project]
+name = "agent-trajectory"
+version = "0.1.0"
+description = "Phase 0 hook feasibility spike for agent trajectory collection"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,1 +1,4 @@
 __pycache__/
+storage/
+trajectories/*.jsonl
+trajectories/*.json

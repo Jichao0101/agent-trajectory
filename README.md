@@ -1,15 +1,15 @@
-# Agent Trajectory Phase 0
+# Agent Trajectory Collector
 
-This repository contains the Phase 0 hook feasibility spike for the agent
-trajectory design.
+This repository contains the hook-driven collector for the agent trajectory
+design.
 
-Phase 0 scope:
+Collector scope:
 
 - hook adapter performs lightweight local enqueue only
-- collector converts queued hook payloads into append-only raw events
+- collector converts queued hook payloads into per-trajectory append-only raw events
 - raw events include schema version, collector version, sequence ordering,
   correlation metadata, payload artifact refs, and baseline snapshot refs
-- report answers the Phase 0 feasibility questions
+- report answers the collector feasibility questions
 - raw collection path uses zero LLM calls
 
 Run a sample:
@@ -38,5 +38,6 @@ Primary outputs:
 - `storage/queue/hook_events.jsonl`
 - `storage/artifacts/*.json`
 - `storage/snapshots/*.json`
-- `trajectories/raw_events.jsonl`
-- `trajectories/phase0_feasibility_report.json`
+- `trajectories/raw/<trajectory_id>/raw_events.jsonl`
+- `trajectories/raw/<trajectory_id>/trajectory_meta.json`
+- `trajectories/collection_report.json`

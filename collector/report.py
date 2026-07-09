@@ -12,7 +12,10 @@ from .timeutil import utc_now_iso
 
 
 def _events(paths: CollectorPaths) -> list[dict[str, Any]]:
-    return [record for _, record in (read_jsonl(paths.raw_events_file) or [])]
+    events: list[dict[str, Any]] = []
+    for raw_file in sorted(paths.raw_trajectory_dir.glob("*/raw_events.jsonl")):
+        events.extend(record for _, record in (read_jsonl(raw_file) or []))
+    return events
 
 
 def build_report(root: Path) -> dict[str, Any]:
@@ -31,7 +34,7 @@ def build_report(root: Path) -> dict[str, Any]:
 
     report = {
         "generated_at": utc_now_iso(),
-        "phase": "phase0_hook_feasibility_spike",
+        "phase": "p1_execution_event_sourcing_mvp",
         "raw_collection_llm_call_count": 0,
         "total_events": len(events),
         "event_type_counts": dict(event_types),
@@ -48,7 +51,7 @@ def build_report(root: Path) -> dict[str, Any]:
             "pre_post_events": len(pre_post),
             "missing_correlation_events": len(missing_correlation),
             "missing_correlation_ratio": (len(missing_correlation) / len(pre_post)) if pre_post else None,
-            "phase0_blocker": bool(missing_correlation),
+            "collector_blocker": bool(missing_correlation),
         },
         "acceptance_questions": {
             "task_boundaries_observable": bool(events),
@@ -60,11 +63,11 @@ def build_report(root: Path) -> dict[str, Any]:
             "collector_can_assign_partial_order_sequence": monotonic,
             "hook_adapter_is_lightweight_enqueue": True,
             "raw_collection_sync_path_uses_llm": False,
-            "local_queue_or_collector_write_observed": paths.queue_file.exists() and paths.raw_events_file.exists(),
+            "local_queue_or_collector_write_observed": paths.queue_file.exists() and bool(events),
         },
         "files": {
             "queue_file": str(paths.queue_file),
-            "raw_events_file": str(paths.raw_events_file),
+            "raw_trajectory_dir": str(paths.raw_trajectory_dir),
             "report_file": str(paths.report_file),
         },
         "unresolved_items": [],
@@ -73,7 +76,7 @@ def build_report(root: Path) -> dict[str, Any]:
         report["unresolved_items"].append("No hook payloads have been collected yet.")
     if missing_correlation:
         report["unresolved_items"].append(
-            "Some tool pre/post events lack a stable correlation key; this is a Phase 0 blocker for reliable merge."
+            "Some tool pre/post events lack a stable correlation key; this is a collector blocker for reliable merge."
         )
     return report
 
@@ -87,9 +90,9 @@ def write_report(root: Path) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Build Phase 0 feasibility report.")
+    parser = argparse.ArgumentParser(description="Build a collector report.")
     parser.add_argument("--root", default=".", help="agent-trajectory project root")
-    parser.add_argument("--write", action="store_true", help="write report to trajectories/")
+    parser.add_argument("--write", action="store_true", help="write collection_report.json to trajectories/")
     args = parser.parse_args(argv)
     report = write_report(Path(args.root)) if args.write else build_report(Path(args.root))
     print(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2))

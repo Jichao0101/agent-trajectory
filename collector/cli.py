@@ -9,12 +9,12 @@ from .service import main as collect_main
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Agent trajectory Phase 0 CLI")
+    parser = argparse.ArgumentParser(description="Agent trajectory collector CLI")
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("enqueue", help="enqueue a hook payload")
     subcommands.add_parser("collect", help="process queued hook payloads")
     subcommands.add_parser("schedule", help="run collector once or poll from a timer")
-    subcommands.add_parser("report", help="build a Phase 0 feasibility report")
+    subcommands.add_parser("report", help="build a collector report")
     args, rest = parser.parse_known_args(argv)
     if args.command == "enqueue":
         return enqueue_main(rest)

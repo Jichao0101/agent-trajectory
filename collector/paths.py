@@ -13,8 +13,8 @@ class CollectorPaths:
         self.artifact_dir = self.storage_dir / "artifacts"
         self.snapshot_dir = self.storage_dir / "snapshots"
         self.trajectory_dir = self.root / "trajectories"
-        self.raw_events_file = self.trajectory_dir / "raw_events.jsonl"
-        self.report_file = self.trajectory_dir / "phase0_feasibility_report.json"
+        self.raw_trajectory_dir = self.trajectory_dir / "raw"
+        self.report_file = self.trajectory_dir / "collection_report.json"
 
     def ensure(self) -> None:
         for directory in [
@@ -23,5 +23,6 @@ class CollectorPaths:
             self.artifact_dir,
             self.snapshot_dir,
             self.trajectory_dir,
+            self.raw_trajectory_dir,
         ]:
             directory.mkdir(parents=True, exist_ok=True)

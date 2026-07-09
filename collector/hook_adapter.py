@@ -36,7 +36,7 @@ def enqueue_hook_payload(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Lightweight hook adapter for Phase 0.")
+    parser = argparse.ArgumentParser(description="Lightweight hook adapter for agent trajectory capture.")
     parser.add_argument("--root", default=".", help="agent-trajectory project root")
     parser.add_argument("--hook-name", required=True, help="hook/event name from the caller")
     parser.add_argument("--source", default="codex-hook", help="source surface name")

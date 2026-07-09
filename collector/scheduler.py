@@ -39,7 +39,7 @@ def run_once(root: Path, limit: int | None = None, write_feasibility_report: boo
             return {
                 "locked": True,
                 "processed": 0,
-                "raw_events_file": str(paths.raw_events_file),
+                "raw_trajectory_dir": str(paths.raw_trajectory_dir),
                 "report_written": False,
             }
         result = collect(paths.root, limit)
@@ -74,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the collector from a timer or lightweight background loop.")
     parser.add_argument("--root", default=".", help="agent-trajectory project root")
     parser.add_argument("--limit", type=int, help="maximum queued envelopes to process per run")
-    parser.add_argument("--write-report", action="store_true", help="write the Phase 0 feasibility report after each run")
+    parser.add_argument("--write-report", action="store_true", help="write the collection report after each run")
     parser.add_argument("--loop", action="store_true", help="keep polling the queue instead of running once")
     parser.add_argument("--interval", type=float, default=30.0, help="poll interval in seconds for --loop")
     args = parser.parse_args(argv)
